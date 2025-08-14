@@ -16,7 +16,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
-CORS(app)  # 启用跨域支持
+# 配置CORS支持生产环境
+CORS(app, 
+     origins=['https://app-fengshui.begin.new', 'http://localhost:3000'],
+     methods=['GET', 'POST', 'OPTIONS'],
+     allow_headers=['Content-Type', 'Authorization'],
+     supports_credentials=True)
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
