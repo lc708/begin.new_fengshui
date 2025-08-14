@@ -108,31 +108,35 @@ const DailyPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 宜忌事项 */}
+            {/* 宜忌事项 - 传统算法版本 */}
             <div className="grid md:grid-cols-2 gap-6">
               <div className="traditional-card p-6">
                 <h3 className="text-lg font-serif-sc font-semibold text-green-600 mb-4 text-center">
-                  ✅ 今日宜
+                  ✅ 今日宜 ({todayFortune.suitable.length}项)
                 </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {todayFortune.suitable.map((item: string, index: number) => (
-                    <div key={index} className="bg-green-50 text-green-700 px-3 py-2 rounded text-center text-sm">
-                      {item}
-                    </div>
-                  ))}
+                <div className="max-h-60 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-2">
+                    {todayFortune.suitable.map((item: string, index: number) => (
+                      <div key={index} className="bg-green-50 text-green-700 px-2 py-1 rounded text-center text-sm font-serif-sc">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               <div className="traditional-card p-6">
                 <h3 className="text-lg font-serif-sc font-semibold text-red-600 mb-4 text-center">
-                  ❌ 今日忌
+                  ❌ 今日忌 ({todayFortune.unsuitable.length}项)
                 </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {todayFortune.unsuitable.map((item: string, index: number) => (
-                    <div key={index} className="bg-red-50 text-red-700 px-3 py-2 rounded text-center text-sm">
-                      {item}
-                    </div>
-                  ))}
+                <div className="max-h-60 overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-2">
+                    {todayFortune.unsuitable.map((item: string, index: number) => (
+                      <div key={index} className="bg-red-50 text-red-700 px-2 py-1 rounded text-center text-sm font-serif-sc">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -171,36 +175,95 @@ const DailyPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 农历详情 - 仅在有准确农历信息时显示 */}
-            {todayFortune.accurate_lunar && (
-              <div className="traditional-card p-6">
-                <h3 className="text-lg font-serif-sc font-semibold text-traditional-red mb-4">
-                  🏮 农历详情
-                </h3>
+            {/* 传统黄历详情 */}
+            <div className="traditional-card p-6">
+              <h3 className="text-lg font-serif-sc font-semibold text-traditional-red mb-4">
+                🏮 传统黄历详情
+              </h3>
+              
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="text-center bg-traditional-gold p-3 rounded">
+                  <div className="text-traditional-dark-green font-medium mb-1">五行</div>
+                  <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.wuxing}</div>
+                </div>
                 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="text-center bg-traditional-gold p-3 rounded">
-                    <div className="text-traditional-dark-green font-medium mb-1">五行</div>
-                    <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.wuxing}</div>
+                <div className="text-center bg-traditional-gold p-3 rounded">
+                  <div className="text-traditional-dark-green font-medium mb-1">神兽</div>
+                  <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.shenshou}</div>
+                </div>
+                
+                <div className="text-center bg-traditional-gold p-3 rounded">
+                  <div className="text-traditional-dark-green font-medium mb-1">四宫</div>
+                  <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.sigong}</div>
+                </div>
+                
+                <div className="text-center bg-traditional-gold p-3 rounded">
+                  <div className="text-traditional-dark-green font-medium mb-1">日禄</div>
+                  <div className="text-sm font-serif-sc">{todayFortune.accurate_lunar.rilu}</div>
+                </div>
+              </div>
+
+              {/* 新增：传统算法特有信息 */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="text-md font-serif-sc font-medium text-traditional-red mb-3">⭐ 星宿神煞</h4>
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-traditional-dark-green">建除十二神:</span>
+                      <span className="font-serif-sc">{todayFortune.twelve_officer}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-traditional-dark-green">十二值神:</span>
+                      <span className="font-serif-sc">{todayFortune.twelve_god}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-traditional-dark-green">二十八星宿:</span>
+                      <span className="font-serif-sc">{todayFortune.twenty_eight_stars}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-traditional-dark-green">东方星座:</span>
+                      <span className="font-serif-sc">{todayFortune.east_zodiac}</span>
+                    </div>
                   </div>
-                  
-                  <div className="text-center bg-traditional-gold p-3 rounded">
-                    <div className="text-traditional-dark-green font-medium mb-1">神兽</div>
-                    <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.shenshou}</div>
-                  </div>
-                  
-                  <div className="text-center bg-traditional-gold p-3 rounded">
-                    <div className="text-traditional-dark-green font-medium mb-1">四宫</div>
-                    <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.sigong}</div>
-                  </div>
-                  
-                  <div className="text-center bg-traditional-gold p-3 rounded">
-                    <div className="text-traditional-dark-green font-medium mb-1">日禄</div>
-                    <div className="text-sm font-serif-sc">{todayFortune.accurate_lunar.rilu}</div>
+                </div>
+
+                <div>
+                  <h4 className="text-md font-serif-sc font-medium text-traditional-red mb-3">🔮 吉凶神煞</h4>
+                  <div className="space-y-2">
+                    <div>
+                      <span className="text-green-600 font-medium">吉神: </span>
+                      <span className="text-sm">{todayFortune.good_gods.join('、')}</span>
+                    </div>
+                    <div>
+                      <span className="text-red-600 font-medium">凶煞: </span>
+                      <span className="text-sm">{todayFortune.bad_gods.join('、')}</span>
+                    </div>
+                    <div className="mt-3 p-2 bg-blue-50 rounded text-sm">
+                      <span className="font-medium">今日等级: </span>
+                      <span className="font-serif-sc">{todayFortune.thing_level}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            )}
+
+              {/* 彭祖百忌和胎神（如果有） */}
+              {(todayFortune.pengzu_taboo || todayFortune.fetal_god) && (
+                <div className="mt-6 grid md:grid-cols-2 gap-4">
+                  {todayFortune.pengzu_taboo && (
+                    <div className="bg-yellow-50 p-3 rounded">
+                      <div className="text-traditional-dark-green font-medium mb-1">📜 彭祖百忌</div>
+                      <div className="text-sm font-serif-sc">{todayFortune.pengzu_taboo}</div>
+                    </div>
+                  )}
+                  {todayFortune.fetal_god && (
+                    <div className="bg-pink-50 p-3 rounded">
+                      <div className="text-traditional-dark-green font-medium mb-1">👶 胎神占方</div>
+                      <div className="text-sm font-serif-sc">{todayFortune.fetal_god}</div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* 温馨提示 */}
             <div className="traditional-card p-6 bg-blue-50">
@@ -243,6 +306,20 @@ const DailyPage: React.FC = () => {
                 </div>
                 <div className="mt-4 text-center text-sm text-traditional-dark-green">
                   💡 大吉、吉时适合重要活动；平时可正常安排；凶时宜谨慎行事
+                </div>
+              </div>
+            )}
+
+            {/* 算法说明 */}
+            {todayFortune.algorithm_type && (
+              <div className="traditional-card p-4 bg-gray-50">
+                <div className="text-center text-sm text-gray-600">
+                  <span className="font-medium">算法来源: </span>
+                  {todayFortune.algorithm_type === 'traditional' ? (
+                    <span>cnlunar传统黄历算法 - 基于建除十二神、二十八星宿等传统理论</span>
+                  ) : (
+                    <span>简化算法</span>
+                  )}
                 </div>
               </div>
             )}

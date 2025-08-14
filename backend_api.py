@@ -289,8 +289,7 @@ def get_daily_fortune_api():
     try:
         date = request.args.get('date', datetime.now().strftime("%Y-%m-%d"))
         user_bazi = request.args.get('user_bazi')  # 可选的用户八字信息
-        
-        logger.info(f"查询日期 {date} 的运势")
+        logger.info(f"查询日期 {date} 的运势 (传统算法)")
         
         # 解析用户八字（如果提供）
         parsed_bazi = None
@@ -301,8 +300,19 @@ def get_daily_fortune_api():
             except:
                 parsed_bazi = None
         
-        # 获取当日运势
-        daily_info = get_daily_fortune(date, parsed_bazi)
+        # 默认使用传统算法
+        try:
+            from utils.traditional_calendar import get_traditional_fortune
+            daily_info = get_traditional_fortune(date, parsed_bazi)
+            daily_info["algorithm_type"] = "traditional"
+            logger.info(f"使用传统算法计算: {date}")
+        except Exception as e:
+            logger.error(f"传统算法失败: {str(e)}")
+            # 如果传统算法失败，返回错误而不是回退
+            return jsonify({
+                "success": False,
+                "error": f"传统算法计算失败: {str(e)}"
+            }), 500
         
         response_data = {
             "success": True,

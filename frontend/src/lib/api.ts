@@ -89,18 +89,32 @@ export interface AnalysisResult {
 export interface DailyFortune {
   date: string;
   ganzhi: string;
+  year_ganzhi: string;
+  month_ganzhi: string;
   suitable: string[];
   unsuitable: string[];
   wealth_direction: string;
   overall_score: number;
   time_fortune: Record<string, string>;
   conflict_zodiac: string;
+  zodiac_clash: string;
+  
+  // 农历信息（cnlunar完整版本）
   lunar_info: {
+    year: string;
     month: string;
-    day: number;
+    day: string;
     description: string;
+    is_leap_month: boolean;
+    season: string;
+    lunar_year_num: number;
+    lunar_month_num: number;
+    lunar_day_num: number;
+    month_long: boolean;
   };
-  accurate_lunar?: {
+  
+  // 兼容性字段
+  accurate_lunar: {
     lunar_year: string;
     lunar_month: string;
     lunar_day: string;
@@ -111,6 +125,27 @@ export interface DailyFortune {
     shenshou: string;
     sigong: string;
   };
+  
+  // 传统算法特有字段
+  good_gods: string[];          // 吉神
+  bad_gods: string[];           // 凶煞
+  twelve_officer: string;       // 建除十二神
+  twelve_god: string;           // 十二值神
+  twenty_eight_stars: string;   // 二十八星宿
+  east_zodiac: string;          // 东方星座
+  today_level: number;          // 今日等级
+  level_name: string;           // 等级名称
+  thing_level: string;          // 事务等级
+  solar_terms: string;          // 节气
+  next_solar_term: string;      // 下个节气
+  next_solar_date: number[];    // 下个节气日期
+  star_zodiac: string;          // 星座
+  zodiac_animal: string;        // 生肖
+  week_day: string;             // 星期
+  season: string;               // 季节
+  pengzu_taboo?: string;        // 彭祖百忌
+  fetal_god?: string;           // 胎神占方
+  algorithm_type: string;       // 算法类型
 }
 
 // API接口函数
