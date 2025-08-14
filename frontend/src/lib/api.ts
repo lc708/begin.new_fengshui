@@ -100,6 +100,17 @@ export interface DailyFortune {
     day: number;
     description: string;
   };
+  accurate_lunar?: {
+    lunar_year: string;
+    lunar_month: string;
+    lunar_day: string;
+    lunar_date_str: string;
+    bazi: string;
+    wuxing: string;
+    rilu: string;
+    shenshou: string;
+    sigong: string;
+  };
 }
 
 // API接口函数

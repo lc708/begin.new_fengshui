@@ -82,8 +82,13 @@ const DailyPage: React.FC = () => {
                   <div className="font-bold text-traditional-red mb-2">日期</div>
                   <div className="text-lg">{todayFortune.date}</div>
                   <div className="text-sm text-traditional-dark-green">
-                    农历{todayFortune.lunar_info.description}
+                    {todayFortune.accurate_lunar?.lunar_date_str || `农历${todayFortune.lunar_info.description}`}
                   </div>
+                  {todayFortune.accurate_lunar && (
+                    <div className="text-xs text-traditional-dark-green mt-1">
+                      {todayFortune.accurate_lunar.bazi}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="bg-traditional-gold p-4 rounded">
@@ -165,6 +170,37 @@ const DailyPage: React.FC = () => {
                 </div>
               </div>
             </div>
+
+            {/* 农历详情 - 仅在有准确农历信息时显示 */}
+            {todayFortune.accurate_lunar && (
+              <div className="traditional-card p-6">
+                <h3 className="text-lg font-serif-sc font-semibold text-traditional-red mb-4">
+                  🏮 农历详情
+                </h3>
+                
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="text-center bg-traditional-gold p-3 rounded">
+                    <div className="text-traditional-dark-green font-medium mb-1">五行</div>
+                    <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.wuxing}</div>
+                  </div>
+                  
+                  <div className="text-center bg-traditional-gold p-3 rounded">
+                    <div className="text-traditional-dark-green font-medium mb-1">神兽</div>
+                    <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.shenshou}</div>
+                  </div>
+                  
+                  <div className="text-center bg-traditional-gold p-3 rounded">
+                    <div className="text-traditional-dark-green font-medium mb-1">四宫</div>
+                    <div className="text-lg font-serif-sc">{todayFortune.accurate_lunar.sigong}</div>
+                  </div>
+                  
+                  <div className="text-center bg-traditional-gold p-3 rounded">
+                    <div className="text-traditional-dark-green font-medium mb-1">日禄</div>
+                    <div className="text-sm font-serif-sc">{todayFortune.accurate_lunar.rilu}</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* 温馨提示 */}
             <div className="traditional-card p-6 bg-blue-50">
