@@ -11,7 +11,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 // 创建axios实例
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000, // 60秒超时，适应LLM调用时间
+  timeout: 90000, // 90秒超时，适应生产环境LLM调用时间
   headers: {
     'Content-Type': 'application/json',
   },

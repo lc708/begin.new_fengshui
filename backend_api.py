@@ -445,11 +445,19 @@ def internal_error(error):
     }), 500
 
 def find_free_port():
-    """在8000-9000范围内查找可用端口"""
+    """查找可用端口，优先支持生产环境"""
     import socket
     import random
     
-    # 首先尝试一些固定的优选端口
+    # Railway/生产环境使用PORT环境变量
+    railway_port = os.getenv('PORT')
+    if railway_port:
+        try:
+            return int(railway_port)  # Railway会确保端口可用
+        except ValueError:
+            print(f"⚠️ 无效的PORT环境变量: {railway_port}")
+    
+    # 首先尝试一些固定的优选端口（开发环境）
     preferred_ports = [8080, 8081, 8082, 8888, 8000, 8001, 8002]
     
     # 检查优选端口
