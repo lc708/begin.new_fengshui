@@ -150,7 +150,7 @@ const DailyPage: React.FC = () => {
                   <div className="text-traditional-dark-green font-medium mb-2">⏰ 吉时</div>
                   <div className="text-sm bg-traditional-gold px-4 py-2 rounded">
                     {todayFortune.time_fortune && Object.entries(todayFortune.time_fortune)
-                      .filter(([_, fortune]) => (fortune as string).includes('吉'))
+                      .filter(([_, fortune]) => String(fortune).includes('吉'))
                       .slice(0, 2)
                       .map(([time, _]) => time.split('(')[0])
                       .join('、') || '无'}
@@ -187,6 +187,7 @@ const DailyPage: React.FC = () => {
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                   {Object.entries(todayFortune.time_fortune).map(([time, fortune]) => {
+                    const fortuneStr = String(fortune); // 明确转换为字符串
                     const getFortuneColor = (fortune: string) => {
                       if (fortune.includes('大吉')) return 'bg-green-100 text-green-800 border-green-300';
                       if (fortune.includes('吉')) return 'bg-blue-100 text-blue-800 border-blue-300';
@@ -197,9 +198,9 @@ const DailyPage: React.FC = () => {
                     };
                     
                     return (
-                      <div key={time} className={`p-3 rounded-lg border-2 text-center ${getFortuneColor(fortune as string)}`}>
+                      <div key={time} className={`p-3 rounded-lg border-2 text-center ${getFortuneColor(fortuneStr)}`}>
                         <div className="font-medium text-sm">{time}</div>
-                        <div className="text-lg font-bold mt-1">{fortune}</div>
+                        <div className="text-lg font-bold mt-1">{fortuneStr}</div>
                       </div>
                     );
                   })}
