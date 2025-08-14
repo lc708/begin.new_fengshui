@@ -4,7 +4,7 @@ python-dotenv>=1.0.0       # For loading environment variables
 pyyaml>=6.0                # For YAML parsing
 flask>=2.3.0               # For API server
 flask-cors>=4.0.0          # For CORS support
-cnlunar>=2.0.0             # For traditional Chinese lunar calendar calculations
+cnlunar>=0.2.0             # For traditional Chinese lunar calendar calculations
 
 # Optional dependencies (uncomment if needed)
 # google-generativeai>=0.3.0  # For Google Gemini support
