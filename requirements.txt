@@ -5,6 +5,7 @@ pyyaml>=6.0                # For YAML parsing
 flask>=2.3.0               # For API server
 flask-cors>=4.0.0          # For CORS support
 cnlunar>=0.2.0             # For traditional Chinese lunar calendar calculations
+pytz>=2023.3               # For timezone handling
 
 # Optional dependencies (uncomment if needed)
 # google-generativeai>=0.3.0  # For Google Gemini support

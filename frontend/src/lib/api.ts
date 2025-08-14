@@ -287,6 +287,14 @@ export const getDailyFortune = async (date?: string, userBazi?: BaziResult) => {
     if (date) params.date = date;
     if (userBazi) params.user_bazi = JSON.stringify(userBazi);
     
+    // 自动添加用户时区信息
+    try {
+      params.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch {
+      // 时区检测失败时的fallback
+      params.timezone = 'Asia/Shanghai'; // 默认中国时区
+    }
+    
     const response = await apiClient.get('/api/daily/fortune', { params });
     
     if (!response.data.success) {

@@ -287,8 +287,29 @@ def get_fengshui_advice():
 def get_daily_fortune_api():
     """每日运势API接口"""
     try:
-        date = request.args.get('date', datetime.now().strftime("%Y-%m-%d"))
+        # 优先使用前端传递的日期，否则使用服务器时间
+        date = request.args.get('date')
+        user_timezone = request.args.get('timezone')  # 用户时区信息
         user_bazi = request.args.get('user_bazi')  # 可选的用户八字信息
+        
+        # 如果没有传递日期，根据用户时区计算当前日期
+        if not date:
+            if user_timezone:
+                try:
+                    import pytz
+                    user_tz = pytz.timezone(user_timezone)
+                    user_now = datetime.now(user_tz)
+                    date = user_now.strftime("%Y-%m-%d")
+                    logger.info(f"根据用户时区 {user_timezone} 计算日期: {date}")
+                except:
+                    # 如果时区解析失败，使用服务器时间
+                    date = datetime.now().strftime("%Y-%m-%d")
+                    logger.warning(f"时区解析失败，使用服务器时间: {date}")
+            else:
+                # 没有时区信息，使用服务器时间
+                date = datetime.now().strftime("%Y-%m-%d")
+                logger.info(f"未提供时区信息，使用服务器时间: {date}")
+        
         logger.info(f"查询日期 {date} 的运势 (传统算法)")
         
         # 解析用户八字（如果提供）
@@ -335,13 +356,37 @@ def get_daily_fortune_api():
 def get_auspicious_days_api():
     """吉日查询API接口"""
     try:
-        start_date = request.args.get('start_date', datetime.now().strftime("%Y-%m-%d"))
+        start_date = request.args.get('start_date')
         end_date = request.args.get('end_date')
         activity_type = request.args.get('activity_type', 'general')
+        user_timezone = request.args.get('timezone')
         
+        # 处理默认开始日期
+        if not start_date:
+            if user_timezone:
+                try:
+                    import pytz
+                    user_tz = pytz.timezone(user_timezone)
+                    user_now = datetime.now(user_tz)
+                    start_date = user_now.strftime("%Y-%m-%d")
+                except:
+                    start_date = datetime.now().strftime("%Y-%m-%d")
+            else:
+                start_date = datetime.now().strftime("%Y-%m-%d")
+        
+        # 处理默认结束日期
         if not end_date:
             from datetime import timedelta
-            end_date = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
+            if user_timezone:
+                try:
+                    import pytz
+                    user_tz = pytz.timezone(user_timezone)
+                    user_now = datetime.now(user_tz)
+                    end_date = (user_now + timedelta(days=30)).strftime("%Y-%m-%d")
+                except:
+                    end_date = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
+            else:
+                end_date = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
         
         logger.info(f"查询 {start_date} 到 {end_date} 的 {activity_type} 吉日")
         
