@@ -1,6 +1,7 @@
 import React from 'react';
 import Hero from '../components/Hero';
 import NavigationCard from '../components/NavigationCard';
+import GitHubButton from '../components/GitHubButton';
 
 const HomePage: React.FC = () => {
   const navigationItems = [
@@ -22,7 +23,12 @@ const HomePage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-traditional-beige">
+    <div className="min-h-screen bg-traditional-beige relative">
+      {/* GitHub按钮 - 右上角固定 */}
+      <div className="fixed top-6 right-6 z-50">
+        <GitHubButton size="lg" />
+      </div>
+      
       <Hero 
         title="风水命理大师"
         subtitle="传统文化，现代体验"
