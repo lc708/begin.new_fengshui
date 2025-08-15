@@ -5,6 +5,38 @@
 
 import axios from 'axios';
 
+
+/**
+ * 更健壮的时区检测函数
+ * 多级fallback确保总能获取到可用的时区
+ */
+function getTimezone(): string {
+  try {
+    // 方式1: 标准API (最优)
+    return Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } catch {
+    try {
+      // 方式2: 偏移量推断
+      const offset = -new Date().getTimezoneOffset() / 60;
+      const timezoneMap: { [key: string]: string } = {
+        "8": 'Asia/Shanghai',      // UTC+8 中国
+        "9": 'Asia/Tokyo',         // UTC+9 日本
+        "-5": 'America/New_York',  // UTC-5 美国东部
+        "-8": 'America/Los_Angeles', // UTC-8 美国西部
+        "0": 'Europe/London',      // UTC+0 英国
+        "1": 'Europe/Paris',       // UTC+1 中欧
+        "-7": 'America/Denver',    // UTC-7 美国山地时间
+        "-6": 'America/Chicago',   // UTC-6 美国中部时间
+        "10": 'Australia/Sydney',  // UTC+10 澳大利亚东部
+      };
+      return timezoneMap[offset.toString()] || 'Asia/Shanghai';
+    } catch {
+      // 方式3: 语言推断
+      const lang = navigator.language || 'zh-CN';
+      return lang.startsWith('zh') ? 'Asia/Shanghai' : 'America/New_York';
+    }
+  }
+}
 // API基础配置  
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
@@ -287,14 +319,9 @@ export const getDailyFortune = async (date?: string, userBazi?: BaziResult) => {
     if (date) params.date = date;
     if (userBazi) params.user_bazi = JSON.stringify(userBazi);
     
-    // 自动添加用户时区信息
-    try {
-      params.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    } catch {
-      // 时区检测失败时的fallback
-      params.timezone = 'Asia/Shanghai'; // 默认中国时区
-    }
-    
+    // 使用增强的时区检测
+    params.timezone = getTimezone();
+    console.log('🌍 检测到用户时区:', params.timezone);    
     const response = await apiClient.get('/api/daily/fortune', { params });
     
     if (!response.data.success) {
@@ -322,6 +349,8 @@ export const getAuspiciousDays = async (
     const params: any = { activity_type: activityType };
     if (startDate) params.start_date = startDate;
     if (endDate) params.end_date = endDate;
+    // 添加时区信息用于准确的日期计算
+    params.timezone = getTimezone();
     
     const response = await apiClient.get('/api/daily/auspicious', { params });
     
@@ -380,3 +409,6 @@ export const handleApiError = (error: any): string => {
   }
   return '未知错误，请稍后重试';
 };
+
+// 导出时区检测函数供其他组件使用
+export { getTimezone };
